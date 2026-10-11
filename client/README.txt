@@ -1,0 +1,1 @@
+eventually i would like to make this into a proper desktop application like music presence, but for now shitty python console app it is
