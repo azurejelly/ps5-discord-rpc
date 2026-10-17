@@ -66,7 +66,7 @@ def main():
 
     server = f"http://{os.getenv("PS5_ADDRESS")}:{os.getenv("PS5_PORT")}/"
 
-    print(f"* ps5-discord-rpc - https://github.com/azurejelly/ps5-discord-rpc")
+    print(f"* ps5-discord-rpc client - https://github.com/azurejelly/ps5-discord-rpc")
     print(f"* will fetch status from {server}")
 
     rpc = connect(client_id)
@@ -105,32 +105,33 @@ def main():
                     rpc.clear()
                 else:
                     metadata = fetch_metadata(title_id)
-                    if metadata:
-                        title = metadata.get("name")
-                        icon = metadata.get("icon")
+                    title = metadata.get("name") if metadata else None
+                    icon = metadata.get("icon") if metadata else None
 
-                        if title_id != last_title_id:
-                            print(f"* now playing: {title} - {title_id}")
+                    if title_id != last_title_id:
+                        print(f"* now playing: {title} - {title_id}")
 
-                        rpc.update(
-                            activity_type=ActivityType.PLAYING,
-                            state=title_id,
-                            details="Playing on PlayStation®5",
-                            name=title,
-                            large_image=icon or None, # some games have no icon (like balatro)
-                            large_text=title
-                        )
+                    if not metadata:
+                        print(f"! failed to fetch metadata for {title_id}, showing a placeholder instead!")
 
-                        last_sent = time.monotonic()
-                        last_title_id = title_id
-                    else:
-                        print(f"! the metadata for the current game ({title_id}) could not be fetched.")
-                        print(f"! nothing will be displayed until the metadata is available!")
-                        return
+                    rpc.update(
+                        activity_type=ActivityType.PLAYING,
+                        state=title_id,
+                        details="Playing on PlayStation®5",
+                        name=title or "Unknown app",
+                        large_image=icon or None,
+                        large_text=title
+                    )
+
+                    last_sent = time.monotonic()
+                    last_title_id = title_id
             except Exception as e: # fuck it we ball (im too tired for this shit)
                 # should also try to update the status after reconnecting
                 print(f"! discord connection lost, will try to reconnect: {e}")
                 rpc = connect(client_id)
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n! interrupted, exiting...")
