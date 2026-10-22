@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 import os
 import requests
-import pypresence
 import time
 
-from pypresence import ActivityType
+from pypresence import ActivityType, Presence
 from dotenv import load_dotenv
 
 # WARNING WARNING WARNING
@@ -13,7 +12,7 @@ from dotenv import load_dotenv
 def connect(client_id):
     while True:
         try:
-            rpc = pypresence.Presence(client_id)
+            rpc = Presence(client_id)
             rpc.connect()
             print("* connected to discord")
             return rpc
