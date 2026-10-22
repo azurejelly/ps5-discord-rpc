@@ -1,0 +1,18 @@
+
+{
+    "version": 4,
+    "configurations": [
+        {
+            "name": "PS5",
+            "compilerPath": "${env:PS5_PAYLOAD_SDK}/bin/prospero-clang",
+            "intelliSenseMode": "linux-clang-x64",
+            "cStandard": "c17",
+            "includePath": [
+                "${workspaceFolder}/server/**",
+                "${env:PS5_PAYLOAD_SDK}/target/include",
+                "${env:PS5_PAYLOAD_SDK}/target/include_common",
+                "${env:PS5_PAYLOAD_SDK}/target/user/homebrew/include"
+            ]
+        }
+    ]
+}
