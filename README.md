@@ -49,7 +49,7 @@ $ pip install -r requirements.txt
 
 Copy `.env.example` to `.env`, set the fields to something that makes sense and, finally, run the client:
 ```shell
-python3 main.py
+$ python3 main.py
 ```
 
 ## Building
