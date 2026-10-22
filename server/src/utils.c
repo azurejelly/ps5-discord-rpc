@@ -3,7 +3,7 @@
 
 #include "utils.h"
 
-void rpc_notify(const char* fmt, ...) {
+void notifyf(const char* fmt, ...) {
     notify_request_t req;
     va_list args;
 

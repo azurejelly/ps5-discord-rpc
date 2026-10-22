@@ -6,6 +6,7 @@
 #include <jansson.h>
 
 #include "server.h"
+#include "config.h"
 #include "utils.h"
 
 static enum MHD_Result handle_request(
@@ -44,7 +45,7 @@ static enum MHD_Result handle_request(
     if (app_id < 0) {
         body = rpc_format_body("idle", NULL);
     } else {
-        char title_id[128]; // could try to allocate a smaller buffer
+        char title_id[16] = {0};
 
         if (sceSystemServiceGetAppTitleId(app_id, &title_id[0]) != 0) {
             body = rpc_format_body("unknown", NULL);
@@ -86,7 +87,7 @@ char* rpc_format_body(char* state, char* title_id) {
     );
 
     if (root == NULL) {
-        rpc_notify("ps5-discord-rpc: request body creation failed! this is a bug!");
+        notifyf("ps5-discord-rpc: request body creation failed! this is a bug!");
         return NULL;
     }
 
@@ -94,25 +95,26 @@ char* rpc_format_body(char* state, char* title_id) {
     json_decref(root);
 
     if (str == NULL) {
-        rpc_notify("ps5-discord-rpc: JSON serialization failed! this is a bug!");
+        notifyf("ps5-discord-rpc: JSON serialization failed! this is a bug!");
         return NULL;
     }
 
     return str;
 }
 
-int rpc_listen(unsigned short port)
+int rpc_listen(config_t* config)
 {
     signal(SIGPIPE, SIG_IGN);
 
+    int port = config->port;
     struct MHD_Daemon *daemon = MHD_start_daemon(MHD_USE_INTERNAL_POLLING_THREAD, port, NULL, NULL, &handle_request, NULL, MHD_OPTION_END);
 
     if (daemon == NULL) {
-        rpc_notify("ps5-discord-rpc failed to start! is something already running on port %d?", port);
+        notifyf("ps5-discord-rpc failed to start! is something already running on port %d?", port);
         return -1;
     }
 
-    rpc_notify("ps5-discord-rpc by azurejelly\nlistening on port %d", port);
+    notifyf("ps5-discord-rpc by azurejelly\nlistening on port %d", port);
 
     for (;;) {
         pause();

@@ -1,9 +1,20 @@
+#include "ini.h"
+
 #include "server.h"
+#include "config.h"
 #include "utils.h"
 
-#define SERVER_PORT 7270
+#define DEFAULT_SERVER_PORT 7270
 
 int main(void) {
-    //todo: coulld add a config file that allows to blacklist certain adds from showing up and to change the webserver port
-    return rpc_listen(SERVER_PORT);
+    config_t cfg = {
+        .version = CONFIG_VERSION,
+        .port = DEFAULT_SERVER_PORT
+    };
+
+    if (rpc_init_config(&cfg) != 0) {
+        return -1;
+    }
+
+    return rpc_listen(&cfg);
 }

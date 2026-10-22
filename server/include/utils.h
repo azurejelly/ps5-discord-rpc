@@ -1,3 +1,5 @@
+#pragma once
+
 #include <string.h>
 
 // notify code is mostly from the ps5-payload-sdk samples
@@ -13,4 +15,4 @@ int sceSystemServiceGetAppIdOfRunningBigApp(void);
 
 int sceSystemServiceGetAppTitleId(int app_id, char *title_id);
 
-void rpc_notify(const char* fmt, ...);
+void notifyf(const char* fmt, ...);

@@ -10,10 +10,14 @@ endif
 OUT_DIR := build
 ELF := ps5-discord-rpc.elf
 
-SRCS := src/main.c src/server.c src/utils.c
+INCLUDES := -Iinclude -Ithird_party/inih
+SRCS := src/main.c \
+        src/server.c \
+        src/utils.c \
+        src/config.c \
+        third_party/inih/ini.c
 
-CFLAGS := -Wall -Werror -g
-
+CFLAGS := -Wall -Werror -g $(INCLUDES)
 LDADD := -L $(HOMEBREW)/lib -lSceSystemService -lmicrohttpd -lpthread -ljansson
 
 all: $(ELF)
@@ -30,9 +34,9 @@ test: $(ELF)
 
 debug: $(ELF)
 	gdb-multiarch \
-	-ex "set architecture i386:x86-64" \
-	-ex "target extended-remote $(PS5_HOST):2159" \
-	-ex "file $(ELF)" \
-	-ex "remote put $(ELF) /data/$(ELF)" \
-	-ex "set remote exec-file /data/$(ELF)" \
-	-ex "start"
+		-ex "set architecture i386:x86-64" \
+		-ex "target extended-remote $(PS5_HOST):2159" \
+		-ex "file $(ELF)" \
+		-ex "remote put $(ELF) /data/$(ELF)" \
+		-ex "set remote exec-file /data/$(ELF)" \
+		-ex "start"
